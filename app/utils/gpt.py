@@ -60,3 +60,63 @@ def generate_summary_email(user: str, opportunities: list) -> str:
         ]
     )
     return response.choices[0].message.content.strip()
+
+
+def improve_email(raw_email: str) -> str:
+    prompt = f"Improve the following sales email while keeping its intent:\n\n{raw_email}"
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content.strip()
+
+def generate_lead_summary(data: dict) -> str:
+    prompt = f"""
+    Analyze the following lead and suggest next actions.
+    Name: {data['lead_name']}, Company: {data['company']}, Quoted: {data['quotation_amount']}, Last Contacted: {data['last_contact_days']} days ago, Stage: {data['stage']}, Source: {data.get('source', 'N/A')}
+    """
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content.strip()
+
+def generate_email_sequence(data: dict) -> str:
+    prompt = f"Generate a 3-step email sequence for a campaign: {data['campaign_name']} targeting {data['audience']} with the goal of {data['goal']}."
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content.strip()
+
+def handle_objection(data: dict) -> str:
+    prompt = f"""
+    Handle this objection for the product {data['product']} from a {data.get('persona', 'customer')}:
+    "{data['objection']}"
+    Make it friendly and persuasive.
+    """
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content.strip()
+
+def crm_insight(data: dict) -> str:
+    prompt = f"""
+    Based on this lead, provide next-step advice:
+    Stage: {data['lead_stage']}, Quotation: {data['quotation_amount']}, Last Meeting: {data['last_meeting_days_ago']} days ago, Source: {data.get('source', 'N/A')}
+    """
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content.strip()
+
+def translate_email(email_text: str, target_language: str) -> str:
+    prompt = f"Translate this email into {target_language}:\n\n{email_text}"
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content.strip()
+
