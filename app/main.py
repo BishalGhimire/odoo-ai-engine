@@ -16,7 +16,14 @@ from app.handlers import (
     handle_objection_response, handle_crm_insight, handle_translation
 )
 
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi.requests import Request
+
+
 app = FastAPI(title="Odoo AI Revenue Engine", version="1.0")
+templates = Jinja2Templates(directory="app/templates")
+
 
 # 🔑 Register new users and init DB on startup
 app.include_router(user_router)
@@ -65,3 +72,8 @@ def crm_insights_route(payload: CrmInsightInput):
 @app.post("/email/translate", dependencies=[Depends(validate_api_key)])
 def translate_email_route(payload: TranslateEmailInput):
     return handle_translation(payload)
+
+@app.get("/docs/manual", response_class=HTMLResponse)
+def custom_docs(request: Request):
+    return templates.TemplateResponse("docs.html", {"request": request})
+

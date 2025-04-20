@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odoo AI Revenue Engine - API Docs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    let countdownInterval;
+
+    function sendRequest(endpoint, method, inputId, resultId) {
+      const apiKey = document.getElementById("apiKey").value;
+      const payload = document.getElementById(inputId).value;
+      fetch(endpoint, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey
+        },
+        body: payload
+      })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById(resultId).textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+          document.getElementById(resultId).textContent = 'Error: ' + err;
+        });
+    }
+
+    function requestToken() {
+      const email = document.getElementById("emailInput").value;
+      fetch("/register/temp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      })
+        .then(res => res.json())
+        .then(data => {
+          const token = data.api_key;
+          document.getElementById("apiKey").value = token;
+          document.getElementById("tokenResult").textContent = JSON.stringify(data, null, 2);
+          sessionStorage.setItem("apiKey", token);
+
+          let expiresIn = 15 * 60;
+          clearInterval(countdownInterval);
+          countdownInterval = setInterval(() => {
+            const minutes = Math.floor(expiresIn / 60);
+            const seconds = expiresIn % 60;
+            document.getElementById("tokenTimer").textContent = `🔐 Expires in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (expiresIn-- <= 0) {
+              clearInterval(countdownInterval);
+              document.getElementById("tokenTimer").textContent = "❌ Token expired. Please generate a new one.";
+            }
+          }, 1000);
+        });
+    }
+
+    function toggleApiKeyField() {
+      const input = document.getElementById("apiKeyContainer");
+      input.classList.toggle("hidden");
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = sessionStorage.getItem("apiKey");
+      if (saved) {
+        document.getElementById("apiKey").value = saved;
+      }
+    });
+  </script>
+</head>
+<body class="bg-gray-50 text-gray-800 p-6">
+  <div class="max-w-5xl mx-auto">
+    <header class="bg-white px-6 py-12 rounded-2xl border border-gray-200 mb-10 shadow-sm">
+  <div class="max-w-4xl mx-auto text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+      🤖 Odoo AI Revenue Engine <span class="text-sky-600 text-xl md:text-2xl font-medium">(Developer Docs)</span>
+    </h1>
+    <p class="mt-6 text-lg text-gray-600 font-light leading-relaxed">
+      The Odoo AI Revenue Engine is your plug-and-play API for revenue automation. It gives sales teams, CRM engineers, and builders the power of GPT-backed logic — without the boilerplate.
+      <br><br>
+      💡 Use this API to:
+      <br>
+      • Auto-generate personalized follow-up and winback emails<br>
+      • Score leads with context-aware intelligence<br>
+      • Summarize pipelines and nudge deals forward — daily
+    </p>
+    <p class="mt-5 text-sm italic text-gray-400">
+      Built for people who hate writing sales emails but love closing deals.
+    </p>
+  </div>
+</header>
+
+    <div class="mb-6 bg-white p-4 rounded shadow">
+      <h2 class="text-lg font-semibold mb-2">🔑 Generate Temporary API Key (15 Min)</h2>
+      <input id="emailInput" type="email" placeholder="your@email.com" class="w-full p-2 mb-2 border border-gray-300 rounded">
+      <button onclick="requestToken()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Get Key</button>
+      <pre id="tokenResult" class="bg-gray-100 p-3 mt-3 rounded text-sm">Token will appear here...</pre>
+      <div id="tokenTimer" class="text-sm text-red-500 mt-1"></div>
+    </div>
+
+    <div class="mb-6">
+      <button onclick="toggleApiKeyField()" title="Show API Key" class="text-sm text-gray-600 flex items-center gap-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 4.5" />
+        </svg>
+        Use a custom API key
+      </button>
+      <div id="apiKeyContainer" class="hidden mt-2">
+        <input id="apiKey" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Paste your key here">
+      </div>
+    </div>
+
+    
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">1. ✍️ Improve Email</h3>
+        <textarea id="improveInput" class="w-full border p-2 mb-2" rows="5">{
+  "email": "Thanks for your interest. Let us know if you have any questions."
+}</textarea>
+        <button onclick="sendRequest('/email/improve', 'POST', 'improveInput', 'improveResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Polish</button>
+        <pre id="improveResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">2. 📄 Lead Summary</h3>
+        <textarea id="leadSummaryInput" class="w-full border p-2 mb-2" rows="6">{
+  "lead_name": "Sam Green",
+  "company": "FutureSoft",
+  "quotation_amount": 9000,
+  "last_contacted_days_ago": 5,
+  "interactions": ["demo", "proposal"]
+}</textarea>
+        <button onclick="sendRequest('/lead/summary', 'POST', 'leadSummaryInput', 'leadSummaryResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Summarize</button>
+        <pre id="leadSummaryResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">3. 📬 Email Sequence</h3>
+        <textarea id="sequenceInput" class="w-full border p-2 mb-2" rows="5">{
+  "topic": "Odoo AI Automation",
+  "steps": 3
+}</textarea>
+        <button onclick="sendRequest('/email/sequence', 'POST', 'sequenceInput', 'sequenceResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Generate</button>
+        <pre id="sequenceResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">4. 🛡️ Objection Handler</h3>
+        <textarea id="objectionInput" class="w-full border p-2 mb-2" rows="5">{
+  "objection": "Your product is too expensive"
+}</textarea>
+        <button onclick="sendRequest('/deal/objection-handler', 'POST', 'objectionInput', 'objectionResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Handle</button>
+        <pre id="objectionResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">5. 📊 CRM Insights</h3>
+        <textarea id="crmInput" class="w-full border p-2 mb-2" rows="5">{
+  "period_days": 30
+}</textarea>
+        <button onclick="sendRequest('/crm/insights', 'POST', 'crmInput', 'crmResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Analyze</button>
+        <pre id="crmResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">6. 🌐 Translate Email</h3>
+        <textarea id="translateInput" class="w-full border p-2 mb-2" rows="5">{
+  "email": "Bonjour, merci pour votre intérêt.",
+  "target_language": "en"
+}</textarea>
+        <button onclick="sendRequest('/email/translate', 'POST', 'translateInput', 'translateResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Translate</button>
+        <pre id="translateResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">7. 📬 Follow-Up Email</h3>
+        <textarea id="followupInput" class="w-full border p-2 mb-2" rows="5">{
+  "lead_name": "Alice Smith",
+  "company": "Visionary Supplies",
+  "product": "Odoo AI Assistant",
+  "days_ago": 3
+}</textarea>
+        <button onclick="sendRequest('/followup/generate', 'POST', 'followupInput', 'followupResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Send</button>
+        <pre id="followupResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">8. 🔥 Lead Score</h3>
+        <textarea id="scoreInput" class="w-full border p-2 mb-2" rows="5">{
+  "lead_id": "L001",
+  "days_since_created": 5,
+  "days_since_last_activity": 1,
+  "quotation_amount": 12000,
+  "source": "referral",
+  "past_meetings": 3
+}</textarea>
+        <button onclick="sendRequest('/lead/score', 'POST', 'scoreInput', 'scoreResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Score</button>
+        <pre id="scoreResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">9. 📣 Winback Email</h3>
+        <textarea id="winbackInput" class="w-full border p-2 mb-2" rows="5">{
+  "lead_name": "John",
+  "company": "BlueTech",
+  "product": "Odoo AI Engine",
+  "days_since_closed": 45,
+  "reason_lost": "Budget"
+}</textarea>
+        <button onclick="sendRequest('/winback/generate', 'POST', 'winbackInput', 'winbackResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Generate</button>
+        <pre id="winbackResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">10. 🧠 Daily Summary</h3>
+        <textarea id="summaryInput" class="w-full border p-2 mb-2" rows="6">{
+  "user": "Alice",
+  "opportunities": [
+    {
+      "lead_name": "Bob",
+      "company": "TechFlow",
+      "quotation_amount": 15000,
+      "days_since_last_contact": 7,
+      "stage": "Proposal"
+    }
+  ]
+}</textarea>
+        <button onclick="sendRequest('/summary/daily', 'POST', 'summaryInput', 'summaryResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Summarize</button>
+        <pre id="summaryResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+    </div>
+
+    <footer class="text-sm text-gray-500 text-center pt-10 border-t mt-10">
+      <p>© 2025 Odoo AI Revenue Engine • Built with FastAPI + GPT-4</p>
+      <p class="mt-1">Crafted with care by <strong>Bishal Ghimire</strong></p>
+      <p>📩 Support: <a href="mailto:hello@bishalghimire.com" class="text-blue-500 hover:underline">hello@bishalghimire.com</a></p>
+    </footer>
+  </div>
+</body>
+</html>
