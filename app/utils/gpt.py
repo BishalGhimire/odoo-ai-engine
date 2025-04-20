@@ -120,3 +120,28 @@ def translate_email(email_text: str, target_language: str) -> str:
     )
     return response.choices[0].message.content.strip()
 
+
+def generate_next_best_action(data: dict) -> str:
+    prompt = f"""
+    You are a smart sales assistant. Based on the following lead info, recommend the next best action:
+
+    Lead Name: {data['lead_name']}
+    Company: {data['company']}
+    Stage: {data['stage']}
+    Days Since Last Contact: {data['days_since_last_contact']}
+    Sentiment: {data.get('sentiment', 'neutral')}
+
+    Suggest a concise action like: "Send a pricing comparison", "Book a demo", or "Pause follow-up for 1 week".
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a proactive sales assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return response.choices[0].message.content.strip()
+
+

@@ -80,3 +80,11 @@ class CrmInsightInput(BaseModel):
 class TranslateEmailInput(BaseModel):
     email_text: str
     target_language: str
+
+class NextBestActionInput(BaseModel):
+    lead_name: str
+    company: str
+    stage: str
+    days_since_last_contact: int
+    sentiment: Optional[str] = "neutral"
+

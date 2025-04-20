@@ -6,6 +6,8 @@ from app.utils.gpt import (
     crm_insight,
     translate_email
 )
+from app.models import NextBestActionInput
+from app.utils.gpt import generate_next_best_action
 
 def handle_improve_email(payload):
     return {"improved_email": improve_email(payload.raw_email)}
@@ -24,3 +26,9 @@ def handle_crm_insight(payload):
 
 def handle_translation(payload):
     return {"translated": translate_email(payload.email_text, payload.target_language)}
+
+
+
+def handle_next_best_action(payload: NextBestActionInput):
+    return {"recommendation": generate_next_best_action(payload.dict())}
+

@@ -20,6 +20,10 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.requests import Request
 
+from app.models import NextBestActionInput
+from app.handlers import handle_next_best_action
+
+
 
 app = FastAPI(title="Odoo AI Revenue Engine", version="1.0")
 templates = Jinja2Templates(directory="app/templates")
@@ -76,4 +80,9 @@ def translate_email_route(payload: TranslateEmailInput):
 @app.get("/docs/manual", response_class=HTMLResponse)
 def custom_docs(request: Request):
     return templates.TemplateResponse("docs.html", {"request": request})
+
+@app.post("/lead/next-action", dependencies=[Depends(validate_api_key)])
+def next_best_action(payload: NextBestActionInput):
+    return handle_next_best_action(payload)
+
 
