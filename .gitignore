@@ -1,19 +1,19 @@
-# Python
+# Python bytecode
 __pycache__/
 *.py[cod]
+
+# Databases
 *.sqlite3
 *.db
 
 # Virtual environments
 venv/
+.venv/
 .env
 
-# IDEs
+# IDEs and editors
 .vscode/
 .idea/
 
-# MacOS
+# macOS system files
 .DS_Store
-
-__pycache__/
-*.pyc
