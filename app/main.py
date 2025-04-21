@@ -22,6 +22,8 @@ from fastapi.requests import Request
 
 from app.models import NextBestActionInput
 from app.handlers import handle_next_best_action
+from app.nextgen import router as nextgen_router
+
 
 
 
@@ -31,6 +33,8 @@ templates = Jinja2Templates(directory="app/templates")
 
 # 🔑 Register new users and init DB on startup
 app.include_router(user_router)
+app.include_router(nextgen_router)
+
 init_db()
 
 @app.get("/")

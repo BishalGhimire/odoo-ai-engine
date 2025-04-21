@@ -240,7 +240,82 @@
         <button onclick="sendRequest('/lead/next-action', 'POST', 'nextActionInput', 'nextActionResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Suggest</button>
         <pre id="nextActionResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
       </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">11. 📝 Meeting Recap</h3>
+        <textarea id="meetingRecapInput" class="w-full border p-2 mb-2" rows="5">{
+        "notes": "We discussed launch strategy, assigned tasks, and agreed to check in next Monday."
+      }</textarea>
+        <button onclick="sendRequest('/meeting/recap', 'POST', 'meetingRecapInput', 'meetingRecapResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Generate Recap</button>
+        <pre id="meetingRecapResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
       
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">12. 🏷️ Classify Email Intent</h3>
+        <textarea id="emailClassifyInput" class="w-full border p-2 mb-2" rows="5">{
+        "email": "Hey! I saw your demo and I'm interested in pricing."
+      }</textarea>
+        <button onclick="sendRequest('/email/classify', 'POST', 'emailClassifyInput', 'emailClassifyResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Classify</button>
+        <pre id="emailClassifyResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+      
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">13. 💼 Rewrite LinkedIn Message</h3>
+        <textarea id="linkedinInput" class="w-full border p-2 mb-2" rows="5">{
+        "message": "Hi, I wanted to introduce our platform and see if you're free to talk next week."
+      }</textarea>
+        <button onclick="sendRequest('/linkedin/rewrite', 'POST', 'linkedinInput', 'linkedinResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Rewrite</button>
+        <pre id="linkedinResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+      
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">14. 🎯 Lead Fit Score</h3>
+        <textarea id="fitScoreInput" class="w-full border p-2 mb-2" rows="5">{
+        "industry": "Healthcare SaaS",
+        "size": "100-200",
+        "region": "North America",
+        "use_case": "patient intake automation"
+      }</textarea>
+        <button onclick="sendRequest('/lead/fit-score', 'POST', 'fitScoreInput', 'fitScoreResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Score</button>
+        <pre id="fitScoreResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">15. ⚔️ Comparison Email (vs Competitor)</h3>
+        <textarea id="comparisonInput" class="w-full border p-2 mb-2" rows="6">{
+        "competitor": "Salesforce",
+        "product": "Odoo CRM",
+        "customer_use_case": "managing deals for B2B SaaS"
+      }</textarea>
+        <button onclick="sendRequest('/comparison/email', 'POST', 'comparisonInput', 'comparisonResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Generate Email</button>
+        <pre id="comparisonResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">16. 🧾 Proposal Draft</h3>
+        <textarea id="proposalInput" class="w-full border p-2 mb-2" rows="6">{
+        "client_name": "NeoTech",
+        "product": "Odoo ERP",
+        "features": ["Inventory", "Sales", "Purchasing"],
+        "price": 14999
+      }</textarea>
+        <button onclick="sendRequest('/proposal/draft', 'POST', 'proposalInput', 'proposalResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Draft</button>
+        <pre id="proposalResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">17. 📊 Usage Summary</h3>
+        <button onclick="sendRequest('/usage/summary', 'GET', '', 'usageResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Fetch</button>
+        <pre id="usageResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold mb-2">18. 🔗 Slack Webhook Echo</h3>
+        <textarea id="slackInput" class="w-full border p-2 mb-2" rows="3">{
+        "text": "Hello from Slack!"
+      }</textarea>
+        <button onclick="sendRequest('/slack/webhook', 'POST', 'slackInput', 'slackResult')" class="bg-blue-600 text-white px-4 py-2 rounded">Send</button>
+        <pre id="slackResult" class="bg-gray-100 mt-3 p-2 rounded text-sm">Response will appear here...</pre>
+      </div>
+                      
+
     </div>
 
     <footer class="text-sm text-gray-500 text-center pt-10 border-t mt-10">
