@@ -1,6 +1,4 @@
-from pydantic import BaseModel
-from typing import Optional
-from typing import List
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 
 class RegisterRequest(BaseModel):
@@ -13,6 +11,8 @@ class FollowUpPayload(BaseModel):
     company: str
     product: str
     days_ago: Optional[int] = 3
+    tone: Optional[str] = "friendly"  # 🆕
+
 
 # 👇 Used for /lead/score
 class LeadScoreInput(BaseModel):
@@ -20,8 +20,9 @@ class LeadScoreInput(BaseModel):
     days_since_created: int
     days_since_last_activity: int
     quotation_amount: float
-    source: Optional[str] = None  # e.g. 'referral', 'web', etc.
+    source: Optional[str] = None
     past_meetings: Optional[int] = 0
+
 
 # 👇 Used for /winback/generate
 class WinbackPayload(BaseModel):
@@ -30,23 +31,27 @@ class WinbackPayload(BaseModel):
     product: str
     days_since_closed: int
     reason_lost: Optional[str] = None
+    tone: Optional[str] = "friendly"  # 🆕
 
 
-
+# 👇 Used for /summary/daily
 class Opportunity(BaseModel):
     lead_name: str
     company: str
     quotation_amount: float
     days_since_last_contact: int
-    stage: str  # e.g., "Negotiation", "Proposal", "Follow-Up"
+    stage: str
 
 class SummaryPayload(BaseModel):
     user: str
     opportunities: List[Opportunity]
 
+
 # 1. Email Improver
 class ImproveEmailInput(BaseModel):
     raw_email: str
+    tone: Optional[str] = "friendly"  # 🆕
+
 
 # 2. Lead Summary Strategist
 class LeadSummaryInput(BaseModel):
@@ -57,17 +62,22 @@ class LeadSummaryInput(BaseModel):
     stage: str
     source: Optional[str] = None
 
+
 # 3. Email Sequence Generator
 class EmailSequenceInput(BaseModel):
     campaign_name: str
     audience: str
     goal: str
+    tone: Optional[str] = "friendly"  # 🆕
+
 
 # 4. Objection Handler
 class ObjectionInput(BaseModel):
     objection: str
     product: str
     persona: Optional[str] = None
+    tone: Optional[str] = "friendly"  # 🆕
+
 
 # 5. CRM Insights
 class CrmInsightInput(BaseModel):
@@ -76,15 +86,17 @@ class CrmInsightInput(BaseModel):
     last_meeting_days_ago: int
     source: Optional[str] = None
 
+
 # 6. Email Translator
 class TranslateEmailInput(BaseModel):
     email_text: str
     target_language: str
 
+
+# 7. Next Best Action
 class NextBestActionInput(BaseModel):
     lead_name: str
     company: str
     stage: str
     days_since_last_contact: int
     sentiment: Optional[str] = "neutral"
-
